@@ -16,15 +16,23 @@ const unsigned int WIDTH = 640, HEIGHT = 480;
 // IDs for VAO, VBO, and shader objects
 unsigned int vao, vbo, shader;
 
+// Uniform variables
+unsigned int uniformXMove;
+bool direction = true;          /* Left = false; right = true */
+float triOffset = 0.0f;         /* Offset starts at 0 */
+float triMaxOffset = 0.7f;      /* The uniform switches direction when it reaches max offset */
+float triIncrement = 0.015f;   /* How fast the uniform increments */
+
 // Vertex shader
 static const char* vertexShader =
         "#version 330\n"
         "\n"
         "layout (location = 0) in vec3 pos;\n"                  /* Note: 'pos' is a built-in variable in OpenGL */
+        "uniform float xMove;\n"
         "\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(0.5 * pos.x, 0.5 * pos.y, pos.z, 1.0);\n"    /* Note: 'gl_Position' is also built-in */
+        "   gl_Position = vec4(0.5 * pos.x + xMove, 0.5 * pos.y, pos.z, 1.0);\n"    /* Note: 'gl_Position' is also built-in */
         "}\n";
 
 // Fragment shader
@@ -142,6 +150,9 @@ void compileShaders()
         std::cout << "Error validating program: " << errorLog << '\n';
         return;
     }
+
+    // Get uniform location in shader
+    uniformXMove = glGetUniformLocation(shader, "xMove");
 }
 
 int main()
@@ -221,11 +232,28 @@ int main()
             auto g = (float) std::abs(sin(i-(M_PI/3)));
             auto b = (float) std::abs(sin(i-(2*M_PI/3)));
 
+            if (direction)
+            {
+                triOffset += triIncrement;
+            }
+            else
+            {
+                triOffset -= triIncrement;
+            }
+
+            if (std::abs(triOffset) >= triMaxOffset)
+            {
+                direction = !direction;
+            }
+
             // Clear window
             glClearColor(r, g, b, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             glUseProgram(shader);
+
+            glUniform1f((int) uniformXMove, triOffset);
+
             glBindVertexArray(vao);
             glDrawArrays(GL_TRIANGLES, 0, 3);
             glBindVertexArray(0);
