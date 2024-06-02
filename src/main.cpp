@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstring>
-#include <valarray>
+#include <complex>
 #include <thread>
 
 // Window dimensions
@@ -228,9 +228,9 @@ int main()
 //            auto b = (float) sin(i-(2*M_PI/3));
 
             // Rotates between RGB values, but with a LOT of color blending
-            auto r = (float) std::abs(sin(i));
-            auto g = (float) std::abs(sin(i-(M_PI/3)));
-            auto b = (float) std::abs(sin(i-(2*M_PI/3)));
+            auto r = (float) std::abs(std::sin(i));
+            auto g = (float) std::abs(std::sin(i-(M_PI/3)));
+            auto b = (float) std::abs(std::sin(i-(2*M_PI/3)));
 
             if (direction)
             {
@@ -260,7 +260,7 @@ int main()
 
             glUseProgram(0);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(17));
+            std::this_thread::sleep_for(std::chrono::microseconds(16667));
             i += 0.005f;
         }
 
