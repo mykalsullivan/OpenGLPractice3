@@ -1,4 +1,4 @@
-# OpenGLPractice2
+# OpenGLPractice3
 
 ## Purpose of this project
 This is just a practice repo for writing graphics using OpenGL.
